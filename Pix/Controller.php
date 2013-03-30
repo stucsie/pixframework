@@ -235,6 +235,13 @@ class Pix_Controller
                 throw new Pix_Controller_Dispatcher_Exception('no controllerName');
             }
 
+            // ucrfirst for namespace case: e.g. MyApp\Controller\Index
+            $segments = explode('\\', $controllerName);
+            $segments = array_map(function($v){
+                return ucfirst($v);
+            }, $segments);
+            $controllerName = implode('\\', $segments);
+
             $className = ucfirst($controllerName) . 'Controller';
             $file = $baseDir . '/controllers/' . $className . '.php';
             if (!class_exists($className, true)) {
@@ -263,6 +270,7 @@ class Pix_Controller
             }
             $controller->{$controller->actionName . 'Action'}($params);
 
+            $controllerName = strtolower(preg_replace('/.+\\\/i', '', $controllerName));
             $file = $controller->view->getPath() . "$controllerName/$controller->actionName.phtml";
             if (file_exists($file)) {
                 echo $controller->draw("$controllerName/$controller->actionName.phtml");
