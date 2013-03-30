@@ -237,7 +237,7 @@ class Pix_Controller
 
             $className = ucfirst($controllerName) . 'Controller';
             $file = $baseDir . '/controllers/' . $className . '.php';
-            if (!class_exists($className, false)) {
+            if (!class_exists($className, true)) {
                 if (file_exists($file)) {
                     include($file);
                 } else {
