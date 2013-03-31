@@ -285,8 +285,15 @@ class Pix_Controller
                 $controller = new ErrorController();
                 $controller->view->setPath("$baseDir/views/");
             } else {
-                $controller = new Pix_Controller_DefaultErrorController();
-                $controller->view->setPath(__DIR__ . '/Controller/DefaultErrorController/views');
+                $controller_namespace = preg_replace('/(.+)\\\(.+)/', '$1', $controllerName);
+                $app_error_controller = $controller_namespace . '\\ErrorController';
+                if (class_exists($app_error_controller, true)) {
+                    $controller = new $app_error_controller;
+                    $controller->view->setPath("$baseDir/views/");
+                } else {
+                    $controller = new Pix_Controller_DefaultErrorController();
+                    $controller->view->setPath(__DIR__ . '/Controller/DefaultErrorController/views');
+                }
             }
 
             $controller->view->exception = $exception;
